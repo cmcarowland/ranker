@@ -8,14 +8,14 @@
         { id: 4, value: "cyan" },
     ];
 
-    let mouseYCoordinate : number = 0; // pointer y coordinate within client
-    let distanceTopGrabbedVsPointer : number = 0;
+    let mouseYCoordinate : number | null = null; // pointer y coordinate within client
+    let distanceTopGrabbedVsPointer : number | null = null;
 
-    let draggingItem = null;
-    let draggingItemId = null;
-    let draggingItemIndex = null;
+    let draggingItem : Object | null = null;
+    let draggingItemId : number | null = null;
+    let draggingItemIndex : number | null = null;
 
-    let hoveredItemIndex = null;
+    let hoveredItemIndex : number | null = null;
 
     $: {
         // prevents the ghost flickering at the top
@@ -45,7 +45,7 @@
 </script>
 
 <div class="container" bind:this={container}>
-    {#if mouseYCoordinate}
+    {#if mouseYCoordinate && distanceTopGrabbedVsPointer && draggingItem && draggingItem.value}
         <div
             class="item ghost"
             style="top: {mouseYCoordinate + distanceTopGrabbedVsPointer}px; background: {draggingItem.value};">
@@ -54,7 +54,8 @@
     {/if}
 
     {#each list as item, index (item)}
-        <div
+        <div 
+            role='none'
             class="item {draggingItemId == item.id ? 'invisible' : ''}"
             style="background: {item.value};"
             draggable="true"
