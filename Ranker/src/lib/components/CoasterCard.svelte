@@ -9,6 +9,7 @@
     export let onDragStart: (coasterId: GUID, fromColumn: ColumnId) => void;
     export let onDragEnd: () => void;
     export let onDropBefore: (beforeCoasterId: GUID) => void;
+    export let onDragHover: (coasterId: GUID, position: 'before' | 'after') => void;
 
     function handleDragStart(event: DragEvent): void {
         onDragStart(coaster.id, fromColumn);
@@ -28,10 +29,22 @@
         if (event.dataTransfer) {
             event.dataTransfer.dropEffect = 'move';
         }
+
+        const target = event.currentTarget as HTMLElement | null;
+        if (!target) {
+            return;
+        }
+
+        const rect = target.getBoundingClientRect();
+        const midpoint = rect.top + rect.height / 2;
+        const position: 'before' | 'after' = event.clientY < midpoint ? 'before' : 'after';
+
+        onDragHover(coaster.id, position);
     }
 
     function handleDrop(event: DragEvent): void {
         event.preventDefault();
+        event.stopPropagation();
         onDropBefore(coaster.id);
     }
 </script>

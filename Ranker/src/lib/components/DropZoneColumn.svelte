@@ -16,6 +16,7 @@
 
     export let onColumnDrop: (toColumn: ColumnId) => void;
     export let onCardDropBefore: (toColumn: ColumnId, beforeCoasterId: GUID) => void;
+    export let onCardDragHover: (toColumn: ColumnId, coasterId: GUID, position: 'before' | 'after') => void;
     export let onCardDragStart: (coasterId: GUID, fromColumn: ColumnId) => void;
     export let onCardDragEnd: () => void;
 
@@ -33,6 +34,10 @@
 
     function handleCardDropBefore(beforeCoasterId: GUID): void {
         onCardDropBefore(columnId, beforeCoasterId);
+    }
+
+    function handleCardDragHover(coasterId: GUID, position: 'before' | 'after'): void {
+        onCardDragHover(columnId, coasterId, position);
     }
 </script>
 
@@ -58,6 +63,7 @@
                     {showRanks}
                     onDragStart={onCardDragStart}
                     onDragEnd={onCardDragEnd}
+                    onDragHover={handleCardDragHover}
                     onDropBefore={handleCardDropBefore} />
             {/if}
         {/each}
