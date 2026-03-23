@@ -5,6 +5,7 @@
 
     let board: BoardData = structuredClone(initialBoardData);
     let parkFilter: GUID | 'all' = 'all';
+    let importStatus = '';
 
     let draggedCoasterId: GUID | null = null;
     let draggedFromColumn: ColumnId | null = null;
@@ -124,6 +125,75 @@
         }
     }
 
+    function isBoardData(value: unknown): value is BoardData {
+        if (!value || typeof value !== 'object') {
+            return false;
+        }
+
+        const candidate = value as Partial<BoardData>;
+        return (
+            Array.isArray(candidate.parks) &&
+            Array.isArray(candidate.coasters) &&
+            typeof candidate.columns === 'object' &&
+            candidate.columns !== null &&
+            Array.isArray(candidate.columns.unridden) &&
+            Array.isArray(candidate.columns.ridden)
+        );
+    }
+
+    function exportBoardJson(): void {
+        const serialized = JSON.stringify(board, null, 2);
+        const blob = new Blob([serialized], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const dateStamp = new Date().toISOString().slice(0, 10);
+
+        link.href = url;
+        link.download = `coaster-ranker-save-${dateStamp}.json`;
+        link.click();
+
+        URL.revokeObjectURL(url);
+        importStatus = 'Exported current board JSON.';
+    }
+
+    function loadBoardFromText(contents: string): void {
+        try {
+            const parsed = JSON.parse(contents);
+            if (!isBoardData(parsed)) {
+                importStatus = 'Import failed: file is not a valid board JSON.';
+                return;
+            }
+
+            board = structuredClone(parsed);
+            recalculateRanks();
+            importStatus = 'Imported save successfully.';
+        } catch {
+            importStatus = 'Import failed: invalid JSON.';
+        }
+    }
+
+    async function importFromFile(file: File | null): Promise<void> {
+        if (!file) {
+            return;
+        }
+
+        const contents = await file.text();
+        loadBoardFromText(contents);
+    }
+
+    function handleFileInputChange(event: Event): void {
+        const input = event.currentTarget as HTMLInputElement;
+        const file = input.files?.[0] ?? null;
+        void importFromFile(file);
+        input.value = '';
+    }
+
+    function handleImportDrop(event: DragEvent): void {
+        event.preventDefault();
+        const file = event.dataTransfer?.files?.[0] ?? null;
+        void importFromFile(file);
+    }
+
     recalculateRanks();
 </script>
 
@@ -143,6 +213,20 @@
                 {/each}
             </select>
         </label>
+
+        <section class="save-tools">
+            <button type="button" class="action" on:click={exportBoardJson}>Export JSON</button>
+            <label class="file-upload">
+                <span>Import JSON</span>
+                <input type="file" accept="application/json,.json" on:change={handleFileInputChange} />
+            </label>
+            <div role="button" class="dropzone" on:dragover={handleDragOver} on:drop={handleImportDrop}>
+                Drop exported save here
+            </div>
+            {#if importStatus}
+                <small class="status">{importStatus}</small>
+            {/if}
+        </section>
     </section>
 
     <section class="board">
@@ -246,6 +330,7 @@
         justify-content: space-between;
         gap: 1rem;
         align-items: end;
+        flex-wrap: wrap;
         padding: 1rem;
         background: rgba(36, 39, 45, 0.92);
         border: 1px solid #434955;
@@ -275,6 +360,48 @@
         border: 1px solid #586171;
         background: #2a2e35;
         color: #f3f5f8;
+    }
+
+    .save-tools {
+        display: grid;
+        gap: 0.45rem;
+        min-width: 230px;
+    }
+
+    .action {
+        border: 1px solid #6d7c96;
+        background: #2d3440;
+        color: #f1f4fa;
+        border-radius: 8px;
+        padding: 0.45rem 0.65rem;
+        cursor: pointer;
+    }
+
+    .action:hover {
+        background: #354055;
+    }
+
+    .file-upload {
+        display: grid;
+        gap: 0.2rem;
+        font-size: 0.85rem;
+        color: #d5d9e1;
+    }
+
+    .file-upload input {
+        color: #cdd5e4;
+    }
+
+    .dropzone {
+        border: 1px dashed #6f7f99;
+        border-radius: 8px;
+        padding: 0.45rem 0.55rem;
+        font-size: 0.84rem;
+        color: #bfc9da;
+    }
+
+    .status {
+        color: #9cc5a9;
     }
 
     .board {
