@@ -1,1 +1,11 @@
-// place files you want to import through the `$lib` alias in this folder.
+export { initialBoardData } from './data';
+export type {
+	BoardColumns,
+	BoardData,
+	Coaster,
+	CoasterType,
+	ColumnId,
+	GUID,
+	Park,
+	ParkLocation
+} from './types';
