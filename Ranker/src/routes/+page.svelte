@@ -10,6 +10,8 @@
 
     let draggedCoasterId: GUID | null = null;
     let draggedFromColumn: ColumnId | null = null;
+    let hoveredRiddenCoasterId: GUID | null = null;
+    let hoveredRiddenPosition: 'before' | 'after' = 'before';
 
     function getParkById(parkId: GUID): Park | undefined {
         return board.parks.find((park) => park.id === parkId);
@@ -33,6 +35,38 @@
     function resetDragState(): void {
         draggedCoasterId = null;
         draggedFromColumn = null;
+        hoveredRiddenCoasterId = null;
+        hoveredRiddenPosition = 'before';
+    }
+
+    // Reactively reorder cards only while dragging within the ridden column.
+    $: {
+        if (draggedCoasterId && draggedFromColumn === 'ridden' && hoveredRiddenCoasterId && hoveredRiddenCoasterId !== draggedCoasterId) {
+            const currentIndex = board.columns.ridden.indexOf(draggedCoasterId);
+            const hoveredIndex = board.columns.ridden.indexOf(hoveredRiddenCoasterId);
+
+            if (currentIndex >= 0 && hoveredIndex >= 0 && currentIndex !== hoveredIndex) {
+                const nextRidden = [...board.columns.ridden];
+                nextRidden.splice(currentIndex, 1);
+                const nextHoveredIndex = nextRidden.indexOf(hoveredRiddenCoasterId);
+
+                if (nextHoveredIndex >= 0) {
+                    const insertIndex = hoveredRiddenPosition === 'after' ? nextHoveredIndex + 1 : nextHoveredIndex;
+                    if (nextRidden[insertIndex] !== draggedCoasterId && nextRidden[insertIndex - 1] !== draggedCoasterId) {
+                        nextRidden.splice(insertIndex, 0, draggedCoasterId);
+                        board = {
+                            ...board,
+                            columns: {
+                                ...board.columns,
+                                ridden: nextRidden
+                            }
+                        };
+
+                        recalculateRanks();
+                    }
+                }
+            }
+        }
     }
 
     function recalculateRanks(): void {
@@ -79,6 +113,21 @@
             return;
         }
 
+        // For ridden-to-ridden drops, the reactive hover logic already produced
+        // the final order. Dropping should only finalize that state.
+        if (toColumn === 'ridden' && draggedFromColumn === 'ridden') {
+            recalculateRanks();
+            resetDragState();
+            return;
+        }
+
+        // Keep current order when dropping onto empty space in the same column.
+        if (toColumn === draggedFromColumn && beforeCoasterId === null) {
+            recalculateRanks();
+            resetDragState();
+            return;
+        }
+
         const nextColumns = {
             unridden: [...board.columns.unridden],
             ridden: [...board.columns.ridden]
@@ -112,6 +161,17 @@
     function startDraggingCoaster(coasterId: GUID, fromColumn: ColumnId): void {
         draggedCoasterId = coasterId;
         draggedFromColumn = fromColumn;
+        hoveredRiddenCoasterId = null;
+        hoveredRiddenPosition = 'before';
+    }
+
+    function setHoveredCoasterWhileDragging(toColumn: ColumnId, coasterId: GUID, position: 'before' | 'after'): void {
+        if (toColumn !== 'ridden' || draggedFromColumn !== 'ridden') {
+            return;
+        }
+
+        hoveredRiddenCoasterId = coasterId;
+        hoveredRiddenPosition = position;
     }
 
     function isBoardData(value: unknown): value is BoardData {
@@ -232,6 +292,7 @@
             {getParkById}
             onColumnDrop={moveCoaster}
             onCardDropBefore={moveCoaster}
+            onCardDragHover={setHoveredCoasterWhileDragging}
             onCardDragStart={startDraggingCoaster}
             onCardDragEnd={resetDragState} />
 
@@ -248,6 +309,7 @@
             {getParkById}
             onColumnDrop={moveCoaster}
             onCardDropBefore={moveCoaster}
+            onCardDragHover={setHoveredCoasterWhileDragging}
             onCardDragStart={startDraggingCoaster}
             onCardDragEnd={resetDragState} />
     </section>
