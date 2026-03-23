@@ -1,5 +1,6 @@
 <script lang="ts">
     import { dev } from '$app/environment';
+    import DropZoneColumn from '$lib/components/DropZoneColumn.svelte';
     import { initialBoardData } from '$lib/data';
     import type { BoardData, Coaster, ColumnId, GUID, Park } from '$lib/types';
 
@@ -108,21 +109,9 @@
         resetDragState();
     }
 
-    function handleCardDragStart(event: DragEvent, coasterId: GUID, fromColumn: ColumnId): void {
+    function startDraggingCoaster(coasterId: GUID, fromColumn: ColumnId): void {
         draggedCoasterId = coasterId;
         draggedFromColumn = fromColumn;
-
-        if (event.dataTransfer) {
-            event.dataTransfer.effectAllowed = 'move';
-            event.dataTransfer.setData('text/plain', coasterId);
-        }
-    }
-
-    function handleDragOver(event: DragEvent): void {
-        event.preventDefault();
-        if (event.dataTransfer) {
-            event.dataTransfer.dropEffect = 'move';
-        }
     }
 
     function isBoardData(value: unknown): value is BoardData {
@@ -220,7 +209,7 @@
                 <span>Import JSON</span>
                 <input type="file" accept="application/json,.json" on:change={handleFileInputChange} />
             </label>
-            <div role="button" class="dropzone" on:dragover={handleDragOver} on:drop={handleImportDrop}>
+            <div role="button" tabindex="0" class="dropzone" on:dragover|preventDefault on:drop={handleImportDrop}>
                 Drop exported save here
             </div>
             {#if importStatus}
@@ -230,75 +219,37 @@
     </section>
 
     <section class="board">
-        <article
-            class="column"
-            on:dragover={handleDragOver}
-            on:drop={() => moveCoaster('unridden')}>
-            <header>
-                <h2>Unridden</h2>
-                <small>{visibleUnridden.length} visible / {board.columns.unridden.length} total</small>
-            </header>
+        <DropZoneColumn
+            title="Unridden"
+            columnId="unridden"
+            coasterIds={visibleUnridden}
+            visibleCount={visibleUnridden.length}
+            totalCount={board.columns.unridden.length}
+            emptyMessage="No coasters match this filter."
+            {draggedCoasterId}
+            showRanks={false}
+            {getCoasterById}
+            {getParkById}
+            onColumnDrop={moveCoaster}
+            onCardDropBefore={moveCoaster}
+            onCardDragStart={startDraggingCoaster}
+            onCardDragEnd={resetDragState} />
 
-            <div class="cards">
-                {#if visibleUnridden.length === 0}
-                    <p class="empty">No coasters match this filter.</p>
-                {/if}
-
-                {#each visibleUnridden as coasterId (coasterId)}
-                    {@const coaster = getCoasterById(coasterId)}
-                    {#if coaster}
-                        <div
-                            role="listitem"
-                            class="card {draggedCoasterId === coaster.id ? 'dragging' : ''}"
-                            draggable="true"
-                            on:dragstart={(event) => handleCardDragStart(event, coaster.id, 'unridden')}
-                            on:dragend={resetDragState}
-                            on:dragover={handleDragOver}
-                            on:drop={() => moveCoaster('unridden', coaster.id)}>
-                            <div class="card-title">{coaster.name}</div>
-                            <div class="meta">{coaster.type} • {getParkById(coaster.homeParkId)?.name}</div>
-                        </div>
-                    {/if}
-                {/each}
-            </div>
-        </article>
-
-        <article
-            class="column"
-            on:dragover={handleDragOver}
-            on:drop={() => moveCoaster('ridden')}>
-            <header>
-                <h2>Ridden</h2>
-                <small>{visibleRidden.length} visible / {board.columns.ridden.length} total</small>
-            </header>
-
-            <div class="cards">
-                {#if visibleRidden.length === 0}
-                    <p class="empty">Drop coasters here to rank them.</p>
-                {/if}
-
-                {#each visibleRidden as coasterId (coasterId)}
-                    {@const coaster = getCoasterById(coasterId)}
-                    {#if coaster}
-                        <div
-                            role="listitem"
-                            class="card ranked {draggedCoasterId === coaster.id ? 'dragging' : ''}"
-                            draggable="true"
-                            on:dragstart={(event) => handleCardDragStart(event, coaster.id, 'ridden')}
-                            on:dragend={resetDragState}
-                            on:dragover={handleDragOver}
-                            on:drop={() => moveCoaster('ridden', coaster.id)}>
-                            <div class="card-title">{coaster.name}</div>
-                            <div class="meta">{coaster.type} • {getParkById(coaster.homeParkId)?.name}</div>
-                            <div class="ranks">
-                                <span>Overall #{coaster.globalRank}</span>
-                                <span>Park #{coaster.parkRank}</span>
-                            </div>
-                        </div>
-                    {/if}
-                {/each}
-            </div>
-        </article>
+        <DropZoneColumn
+            title="Ridden"
+            columnId="ridden"
+            coasterIds={visibleRidden}
+            visibleCount={visibleRidden.length}
+            totalCount={board.columns.ridden.length}
+            emptyMessage="Drop coasters here to rank them."
+            {draggedCoasterId}
+            showRanks={true}
+            {getCoasterById}
+            {getParkById}
+            onColumnDrop={moveCoaster}
+            onCardDropBefore={moveCoaster}
+            onCardDragStart={startDraggingCoaster}
+            onCardDragEnd={resetDragState} />
     </section>
 
     {#if dev}
@@ -408,82 +359,6 @@
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1rem;
-    }
-
-    .column {
-        background: #262a31;
-        border: 1px solid #414753;
-        border-radius: 12px;
-        padding: 0.85rem;
-        display: grid;
-        grid-template-rows: auto 1fr;
-        min-height: 420px;
-    }
-
-    .column header {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-bottom: 0.6rem;
-    }
-
-    h2 {
-        margin: 0;
-    }
-
-    .cards {
-        display: grid;
-        gap: 0.55rem;
-        align-content: start;
-    }
-
-    .card {
-        background: #343943;
-        border: 1px solid #505a6b;
-        border-left: 4px solid #7da0e8;
-        border-radius: 10px;
-        padding: 0.7rem;
-        cursor: grab;
-        user-select: none;
-    }
-
-    .card.ranked {
-        border-left-color: #45b487;
-    }
-
-    .card.dragging {
-        opacity: 0.35;
-    }
-
-    .card-title {
-        font-weight: 600;
-        font-size: 1rem;
-    }
-
-    .meta {
-        font-size: 0.85rem;
-        color: #bdc6d5;
-        margin-top: 0.2rem;
-    }
-
-    .ranks {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 0.45rem;
-        font-size: 0.8rem;
-    }
-
-    .ranks span {
-        background: #232833;
-        border: 1px solid #485269;
-        border-radius: 999px;
-        padding: 0.12rem 0.5rem;
-    }
-
-    .empty {
-        color: #9ca8bc;
-        font-size: 0.9rem;
-        margin: 0.3rem 0;
     }
 
     .json-panel {
