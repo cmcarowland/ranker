@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { dev } from '$app/environment';
     import { initialBoardData } from '$lib/data';
     import type { BoardData, Coaster, ColumnId, GUID, Park } from '$lib/types';
 
@@ -216,10 +217,12 @@
         </article>
     </section>
 
-    <section class="json-panel">
-        <h3>Current JSON snapshot</h3>
-        <pre>{JSON.stringify(board, null, 2)}</pre>
-    </section>
+    {#if dev}
+        <section class="json-panel">
+            <h3>Current JSON snapshot</h3>
+            <pre>{JSON.stringify(board, null, 2)}</pre>
+        </section>
+    {/if}
 </main>
 
 <style>
