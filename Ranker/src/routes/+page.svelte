@@ -226,7 +226,8 @@
     :global(body) {
         margin: 0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #f4f7fb 0%, #d6e3f8 100%);
+        background: linear-gradient(135deg, #1d1f23 0%, #2a2d33 100%);
+        color: #e6e8ec;
     }
 
     .page {
@@ -243,8 +244,8 @@
         gap: 1rem;
         align-items: end;
         padding: 1rem;
-        background: rgba(255, 255, 255, 0.8);
-        border: 1px solid #c2d3f0;
+        background: rgba(36, 39, 45, 0.92);
+        border: 1px solid #434955;
         border-radius: 12px;
     }
 
@@ -255,21 +256,22 @@
 
     p {
         margin: 0.35rem 0 0;
-        color: #30415f;
+        color: #bcc4d1;
     }
 
     .filter {
         display: grid;
         gap: 0.35rem;
         font-size: 0.9rem;
-        color: #203153;
+        color: #d5d9e1;
     }
 
     select {
         padding: 0.5rem 0.65rem;
         border-radius: 8px;
-        border: 1px solid #7f9bd2;
-        background: #ffffff;
+        border: 1px solid #586171;
+        background: #2a2e35;
+        color: #f3f5f8;
     }
 
     .board {
@@ -279,8 +281,8 @@
     }
 
     .column {
-        background: #f9fbff;
-        border: 1px solid #bfd0ef;
+        background: #262a31;
+        border: 1px solid #414753;
         border-radius: 12px;
         padding: 0.85rem;
         display: grid;
@@ -306,9 +308,9 @@
     }
 
     .card {
-        background: #ffffff;
-        border: 1px solid #d4def3;
-        border-left: 4px solid #6d8fd1;
+        background: #343943;
+        border: 1px solid #505a6b;
+        border-left: 4px solid #7da0e8;
         border-radius: 10px;
         padding: 0.7rem;
         cursor: grab;
@@ -316,7 +318,7 @@
     }
 
     .card.ranked {
-        border-left-color: #2f9369;
+        border-left-color: #45b487;
     }
 
     .card.dragging {
@@ -330,7 +332,7 @@
 
     .meta {
         font-size: 0.85rem;
-        color: #44587f;
+        color: #bdc6d5;
         margin-top: 0.2rem;
     }
 
@@ -342,23 +344,24 @@
     }
 
     .ranks span {
-        background: #ebf2ff;
-        border: 1px solid #ccd9f2;
+        background: #232833;
+        border: 1px solid #485269;
         border-radius: 999px;
         padding: 0.12rem 0.5rem;
     }
 
     .empty {
-        color: #58709e;
+        color: #9ca8bc;
         font-size: 0.9rem;
         margin: 0.3rem 0;
     }
 
     .json-panel {
         padding: 0.85rem;
-        background: #0f1730;
+        background: #161a22;
+        border: 1px solid #3b414e;
         border-radius: 12px;
-        color: #d6e2ff;
+        color: #d7e0f2;
         overflow: auto;
     }
 
