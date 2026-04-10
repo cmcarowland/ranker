@@ -13,7 +13,8 @@ export const GET: RequestHandler = async ({ params }) => {
 
 	return json({
 		owner: {
-			handle: user.handle
+			handle: user.handle,
+			displayName: user.displayName
 		},
 		board: userBoard.board,
 		updatedAt: userBoard.updatedAt

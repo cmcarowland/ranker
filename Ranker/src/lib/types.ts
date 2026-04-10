@@ -55,6 +55,7 @@ export interface BoardData {
 export interface User {
 	id: GUID;
 	email: string;
+	displayName: string;
 	handle: string;
 	createdAt: string;
 	lastLoginAt: string;
@@ -85,5 +86,6 @@ export interface UserBoard {
 export interface AuthUser {
 	id: GUID;
 	email: string;
+	displayName: string;
 	handle: string;
 }

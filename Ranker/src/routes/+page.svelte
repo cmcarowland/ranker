@@ -4,6 +4,7 @@
 		<p>Create your own coaster rankings and share them publicly with a user link.</p>
 		<div class="actions">
 			<a href="/login">Log in with email code</a>
+			<a class="secondary" href="/login?mode=signup">Create an account</a>
 		</div>
 		<p class="hint">After login, you will be redirected to your board at /u/your-handle.</p>
 	</section>
@@ -46,6 +47,11 @@
 		color: #f1f4fa;
 		border-radius: 8px;
 		padding: 0.55rem 0.7rem;
+		margin-right: 0.45rem;
+	}
+
+	a.secondary {
+		background: #222831;
 	}
 
 	.hint {
