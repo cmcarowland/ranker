@@ -14,7 +14,12 @@ import {
 	OTP_LIFETIME_MS,
 	SESSION_LIFETIME_MS
 } from '$lib/server/auth';
-import { createUser, normalizeEmail } from '$lib/server/users';
+import {
+	createUser,
+	deriveHandleFromEmail,
+	normalizeDisplayName,
+	normalizeEmail
+} from '$lib/server/users';
 
 declare const process: {
 	cwd: () => string;
@@ -89,8 +94,33 @@ async function ensureDbFile(): Promise<void> {
 }
 
 function sanitizeDb(db: PersistedDb): PersistedDb {
+	const usedHandles = new Set<string>();
+	const users = Array.isArray(db.users)
+		? db.users.map((entry) => {
+			const normalizedDisplayName = normalizeDisplayName(entry.displayName ?? entry.handle ?? 'User');
+			const normalizedEmail = normalizeEmail(entry.email ?? '');
+			const baseHandle = deriveHandleFromEmail(normalizedEmail);
+			let normalizedHandle = baseHandle;
+			let counter = 2;
+
+			while (usedHandles.has(normalizedHandle)) {
+				normalizedHandle = `${baseHandle}-${counter}`;
+				counter += 1;
+			}
+
+			usedHandles.add(normalizedHandle);
+
+			return {
+				...entry,
+				email: normalizedEmail,
+				handle: normalizedHandle,
+				displayName: normalizedDisplayName || entry.handle || 'User'
+			};
+		})
+		: [];
+
 	return {
-		users: Array.isArray(db.users) ? db.users : [],
+		users,
 		sessions: Array.isArray(db.sessions) ? db.sessions : [],
 		otpChallenges: Array.isArray(db.otpChallenges) ? db.otpChallenges : []
 	};
@@ -156,22 +186,32 @@ export async function findUserById(userId: string): Promise<User | null> {
 	return user ?? null;
 }
 
-export async function createOrUpdateUser(email: string): Promise<User> {
+export async function createUserAccount(email: string, displayName: string): Promise<User | null> {
 	const normalized = normalizeEmail(email);
+	const normalizedDisplayName = normalizeDisplayName(displayName);
 
 	return mutateDb((db) => {
 		cleanupExpiredRecords(db);
 		const existing = db.users.find((entry) => entry.email === normalized);
-		const now = new Date().toISOString();
-
 		if (existing) {
-			existing.lastLoginAt = now;
-			return existing;
+			return null;
 		}
 
-		const created = createUser(normalized, db.users);
+		const created = createUser(normalized, normalizedDisplayName, db.users);
 		db.users.push(created);
 		return created;
+	});
+}
+
+export async function touchUserLastLogin(userId: string): Promise<void> {
+	await mutateDb((db) => {
+		cleanupExpiredRecords(db);
+		const user = db.users.find((entry) => entry.id === userId);
+		if (!user) {
+			return;
+		}
+
+		user.lastLoginAt = new Date().toISOString();
 	});
 }
 

@@ -4,12 +4,14 @@
 	import type { BoardData } from '$lib/types';
 
 	export let data: {
-		user: {
+		viewer: {
 			handle: string;
+			displayName: string;
 			email: string;
 		} | null;
 		owner: {
 			handle: string;
+			displayName: string;
 		};
 		board: BoardData;
 		updatedAt: string;
@@ -44,24 +46,29 @@
 		await fetch('/auth/logout', {
 			method: 'POST'
 		});
-		await goto('/login');
+		window.location.href = '/login';
 	}
 </script>
 
 <section class="context-bar">
 	<div class="context-copy">
-		{#if data.user}
-			<p>Signed in as <strong>{data.user.handle}</strong>.</p>
+		{#if data.viewer}
+			<p>
+				Signed in as <strong>@{data.viewer.handle}</strong> ({data.viewer.displayName}).
+			</p>
 		{:else}
 			<p>You are viewing in public mode.</p>
 		{/if}
+		<p>
+			Viewing <strong>{data.owner.displayName}</strong>'s rankings (@{data.owner.handle}).
+		</p>
 		<p>Last saved: {new Date(data.updatedAt).toLocaleString()}</p>
 	</div>
 	<div class="context-actions">
-		{#if data.user && !data.canEdit}
-			<a href={`/u/${data.user.handle}`}>Go to your rankings</a>
+		{#if data.viewer && !data.canEdit}
+			<a href={`/u/${data.viewer.handle}`}>Go to your rankings</a>
 		{/if}
-		{#if !data.user}
+		{#if !data.viewer}
 			<a href="/login">Log in to edit your rankings</a>
 		{:else}
 			<button type="button" on:click={logout}>Log out</button>

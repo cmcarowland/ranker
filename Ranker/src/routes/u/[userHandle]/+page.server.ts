@@ -12,8 +12,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const canEdit = locals.user?.id === owner.id;
 
 	return {
+		viewer: locals.user,
 		owner: {
-			handle: owner.handle
+			handle: owner.handle,
+			displayName: owner.displayName
 		},
 		board: board.board,
 		updatedAt: board.updatedAt,

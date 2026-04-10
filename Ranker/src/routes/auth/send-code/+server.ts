@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { OTP_RESEND_INTERVAL_MS, generateOtpCode } from '$lib/server/auth';
 import { sendLoginCodeEmail } from '$lib/server/mail';
-import { getOtpChallenge, upsertOtpChallenge } from '$lib/server/storage';
+import { findUserByEmail, getOtpChallenge, upsertOtpChallenge } from '$lib/server/storage';
 import { isValidEmail, normalizeEmail } from '$lib/server/users';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -11,6 +11,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	if (!isValidEmail(email)) {
 		return json({ error: 'Please enter a valid email address.' }, { status: 400 });
+	}
+
+	const user = await findUserByEmail(email);
+	if (!user) {
+		return json(
+			{
+				error: 'No account found for that email. Please sign up first.',
+				requiresSignup: true,
+				email
+			},
+			{ status: 404 }
+		);
 	}
 
 	const existing = await getOtpChallenge(email);

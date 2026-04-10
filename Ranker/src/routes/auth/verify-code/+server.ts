@@ -4,10 +4,10 @@ import { OTP_MAX_ATTEMPTS, hashOtpCode, isExpired } from '$lib/server/auth';
 import {
 	bumpOtpAttempts,
 	clearOtpChallenge,
-	createOrUpdateUser,
 	createSession,
+	findUserByEmail,
 	getOtpChallenge,
-	getOrCreateBoard
+	touchUserLastLogin
 } from '$lib/server/storage';
 import { isValidEmail, normalizeEmail } from '$lib/server/users';
 
@@ -50,8 +50,12 @@ export const POST: RequestHandler = async ({ request, cookies, url }) => {
 	}
 
 	await clearOtpChallenge(email);
-	const user = await createOrUpdateUser(email);
-	await getOrCreateBoard(user.id);
+	const user = await findUserByEmail(email);
+	if (!user) {
+		return json({ error: 'No account found for this email. Please sign up first.' }, { status: 404 });
+	}
+
+	await touchUserLastLogin(user.id);
 	const session = await createSession(user.id);
 
 	cookies.set(SESSION_COOKIE, session.token, {
@@ -66,6 +70,7 @@ export const POST: RequestHandler = async ({ request, cookies, url }) => {
 		ok: true,
 		user: {
 			handle: user.handle,
+			displayName: user.displayName,
 			email: user.email
 		}
 	});
