@@ -6,12 +6,18 @@
     export let fromColumn: ColumnId;
     export let isDragging = false;
     export let showRanks = false;
+    export let canEdit = true;
     export let onDragStart: (coasterId: GUID, fromColumn: ColumnId) => void;
     export let onDragEnd: () => void;
     export let onDropBefore: (beforeCoasterId: GUID) => void;
     export let onDragHover: (coasterId: GUID, position: 'before' | 'after') => void;
 
     function handleDragStart(event: DragEvent): void {
+        if (!canEdit) {
+            event.preventDefault();
+            return;
+        }
+
         onDragStart(coaster.id, fromColumn);
 
         if (event.dataTransfer) {
@@ -25,6 +31,10 @@
     }
 
     function handleDragOver(event: DragEvent): void {
+        if (!canEdit) {
+            return;
+        }
+
         event.preventDefault();
         if (event.dataTransfer) {
             event.dataTransfer.dropEffect = 'move';
@@ -43,6 +53,10 @@
     }
 
     function handleDrop(event: DragEvent): void {
+        if (!canEdit) {
+            return;
+        }
+
         event.preventDefault();
         event.stopPropagation();
         onDropBefore(coaster.id);
@@ -51,8 +65,8 @@
 
 <div
     role="listitem"
-    class="card {showRanks ? 'ranked' : ''} {isDragging ? 'dragging' : ''}"
-    draggable="true"
+    class="card {showRanks ? 'ranked' : ''} {isDragging ? 'dragging' : ''} {canEdit ? '' : 'readonly'}"
+    draggable={canEdit ? 'true' : 'false'}
     on:dragstart={handleDragStart}
     on:dragend={handleDragEnd}
     on:dragover={handleDragOver}
@@ -76,6 +90,10 @@
         padding: 0.7rem;
         cursor: grab;
         user-select: none;
+    }
+
+    .card.readonly {
+        cursor: default;
     }
 
     .card.ranked {
