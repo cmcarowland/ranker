@@ -215,6 +215,21 @@ export async function touchUserLastLogin(userId: string): Promise<void> {
 	});
 }
 
+export async function updateUserDisplayName(userId: string, displayName: string): Promise<User | null> {
+	const normalizedDisplayName = normalizeDisplayName(displayName);
+
+	return mutateDb((db) => {
+		cleanupExpiredRecords(db);
+		const user = db.users.find((entry) => entry.id === userId);
+		if (!user) {
+			return null;
+		}
+
+		user.displayName = normalizedDisplayName;
+		return user;
+	});
+}
+
 export async function upsertOtpChallenge(email: string, code: string): Promise<OtpChallenge> {
 	const normalized = normalizeEmail(email);
 
