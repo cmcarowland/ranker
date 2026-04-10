@@ -15,7 +15,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		viewer: locals.user,
 		owner: {
 			handle: owner.handle,
-			displayName: owner.displayName
+			displayName: owner.displayName,
+			email: canEdit ? owner.email : null
 		},
 		board: board.board,
 		updatedAt: board.updatedAt,

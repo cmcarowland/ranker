@@ -5,7 +5,7 @@
 
 	export let initialBoard: BoardData;
 	export let canEdit = false;
-	export let ownerHandle: string;
+	export let ownerDisplayName: string;
 	export let onSave: ((board: BoardData) => Promise<void>) | undefined = undefined;
 
 	let board: BoardData = structuredClone(initialBoard);
@@ -303,7 +303,7 @@
 <main class="page">
 	<section class="toolbar">
 		<div class="title-wrap">
-			<h1>{ownerHandle}'s Coaster Ranker</h1>
+			<h1>{ownerDisplayName}'s Coaster Ranker</h1>
 			<p>Drag cards between unridden and ridden. Reorder ridden cards to set global and per-park rankings.</p>
 			{#if !canEdit}
 				<p class="readonly">Viewing only. Log in as this user to edit rankings.</p>
