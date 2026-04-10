@@ -51,3 +51,41 @@ export interface BoardData {
 	coasters: Coaster[];
 	columns: BoardColumns;
 }
+
+export interface User {
+	id: GUID;
+	email: string;
+	displayName: string;
+	handle: string;
+	createdAt: string;
+	lastLoginAt: string;
+}
+
+export interface Session {
+	token: string;
+	userId: GUID;
+	createdAt: string;
+	expiresAt: string;
+}
+
+export interface OtpChallenge {
+	email: string;
+	codeHash: string;
+	createdAt: string;
+	expiresAt: string;
+	lastSentAt: string;
+	attempts: number;
+}
+
+export interface UserBoard {
+	userId: GUID;
+	board: BoardData;
+	updatedAt: string;
+}
+
+export interface AuthUser {
+	id: GUID;
+	email: string;
+	displayName: string;
+	handle: string;
+}

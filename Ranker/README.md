@@ -1,38 +1,62 @@
-# sv
+# Ranker
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Ranker is a SvelteKit app for maintaining coaster rankings.
 
-## Creating a project
+## Auth model
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Passwordless login using emailed 6-digit code.
+- Code expires after 5 minutes.
+- Session expires after 48 hours.
+- Each user gets a personal board at `/u/<handle>`.
+- Any visitor can view any user board.
+- Only the signed-in board owner can edit and save that board.
+
+## Setup
+
+1. Install dependencies:
 
 ```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+npm install
 ```
 
-## Developing
+2. Configure environment variables:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+```bash
+cp .env.example .env
+```
+
+Set these values:
+
+- `RESEND_API_KEY`: API key for Resend email delivery.
+- `RESEND_FROM_EMAIL`: sender address accepted by your Resend account.
+
+If these variables are missing in local development, OTP codes are logged to the server console.
+
+3. Start the app:
 
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+## Development notes
 
-To create a production version of your app:
+- Auth/session/board persistence is file-backed in `data/ranker-auth.json`.
+- This data directory is ignored by git.
+- Restarting the app preserves users, sessions, OTP state, and boards while the local file remains.
+
+## Main routes
+
+- `/`: landing page
+- `/login`: email code login
+- `/u/<handle>`: public board page (owner can edit)
+- `POST /auth/send-code`: request OTP
+- `POST /auth/verify-code`: verify OTP and create session
+- `POST /auth/logout`: clear session
+- `GET /api/boards/<handle>`: fetch public board
+- `PUT /api/boards/<handle>`: save board (owner only)
+
+## Validate
 
 ```bash
-npm run build
+npm run check
 ```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

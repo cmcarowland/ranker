@@ -1,5 +1,5 @@
 <script lang="ts">
-    import CoasterCard from '$lib/components/CoasterCard.svelte';
+    import CoasterCard from './CoasterCard.svelte';
     import type { Coaster, ColumnId, GUID, Park } from '$lib/types';
 
     export let title: string;
@@ -10,6 +10,7 @@
     export let emptyMessage: string;
     export let draggedCoasterId: GUID | null = null;
     export let showRanks = false;
+    export let canEdit = true;
 
     export let getCoasterById: (coasterId: GUID) => Coaster | undefined;
     export let getParkById: (parkId: GUID) => Park | undefined;
@@ -21,6 +22,10 @@
     export let onCardDragEnd: () => void;
 
     function handleDragOver(event: DragEvent): void {
+        if (!canEdit) {
+            return;
+        }
+
         event.preventDefault();
         if (event.dataTransfer) {
             event.dataTransfer.dropEffect = 'move';
@@ -28,6 +33,10 @@
     }
 
     function handleDrop(event: DragEvent): void {
+        if (!canEdit) {
+            return;
+        }
+
         event.preventDefault();
         onColumnDrop(columnId);
     }
@@ -61,6 +70,7 @@
                     fromColumn={columnId}
                     isDragging={draggedCoasterId === coaster.id}
                     {showRanks}
+                    {canEdit}
                     onDragStart={onCardDragStart}
                     onDragEnd={onCardDragEnd}
                     onDragHover={handleCardDragHover}
