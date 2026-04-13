@@ -44,10 +44,6 @@ const EMPTY_DB: PersistedDb = {
 
 let writeQueue: Promise<void> = Promise.resolve();
 
-function cloneBoard(board: BoardData): BoardData {
-	return structuredClone(board);
-}
-
 async function ensureParksAndCoastersFiles(): Promise<void> {
 	try {
 		await readFile(PARKS_PATH, 'utf8');
