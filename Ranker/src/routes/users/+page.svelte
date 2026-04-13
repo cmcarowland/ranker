@@ -9,6 +9,33 @@
 		} | null;
 		users: PublicUserBoardSummary[];
 	};
+
+	let searchQuery = '';
+	let searchFilter: 'any' | 'username' | 'handle' | 'topCoaster' = 'any';
+
+	$: normalizedQuery = searchQuery.trim().toLowerCase();
+	$: filteredUsers = data.users.filter((user) => {
+		if (!normalizedQuery) {
+			return true;
+		}
+
+		if (searchFilter === 'username') {
+			return user.displayName.toLowerCase().includes(normalizedQuery);
+		}
+
+		if (searchFilter === 'handle') {
+			return user.handle.toLowerCase().includes(normalizedQuery);
+		}
+
+		if (searchFilter === 'topCoaster') {
+			return (user.topCoasterName ?? '').toLowerCase().includes(normalizedQuery);
+		}
+
+		return [user.displayName, user.handle, user.topCoasterName ?? '']
+			.join(' ')
+			.toLowerCase()
+			.includes(normalizedQuery);
+	});
 </script>
 
 <main class="directory-page">
@@ -27,10 +54,33 @@
 	</section>
 
 	<section class="directory-list" aria-label="Users and top coasters">
+		<div class="directory-controls">
+			<label>
+				<span>Search</span>
+				<input
+					type="search"
+					bind:value={searchQuery}
+					placeholder="Name, handle, or #1 coaster"
+				/>
+			</label>
+
+			<label>
+				<span>Filter by</span>
+				<select bind:value={searchFilter}>
+					<option value="any">Any</option>
+					<option value="username">Username</option>
+					<option value="handle">Handle</option>
+					<option value="topCoaster">Top Coaster</option>
+				</select>
+			</label>
+		</div>
+
 		{#if data.users.length === 0}
 			<p class="empty">No users found yet.</p>
+		{:else if filteredUsers.length === 0}
+			<p class="empty">No users match this search.</p>
 		{:else}
-			{#each data.users as user (user.handle)}
+			{#each filteredUsers as user (user.handle)}
 				<article class="user-row">
 					<div class="user-meta">
 						<h2>{user.displayName}</h2>
@@ -83,6 +133,28 @@
 	.directory-list {
 		display: grid;
 		gap: 0.7rem;
+	}
+
+	.directory-controls {
+		display: grid;
+		grid-template-columns: minmax(220px, 1fr) minmax(170px, 220px);
+		gap: 0.7rem;
+	}
+
+	.directory-controls label {
+		display: grid;
+		gap: 0.3rem;
+		font-size: 0.85rem;
+		color: #d5d9e1;
+	}
+
+	.directory-controls input,
+	.directory-controls select {
+		padding: 0.5rem 0.65rem;
+		border-radius: 8px;
+		border: 1px solid #586171;
+		background: #2a2e35;
+		color: #f3f5f8;
 	}
 
 	.user-row {
@@ -139,6 +211,10 @@
 	}
 
 	@media (max-width: 760px) {
+		.directory-controls {
+			grid-template-columns: 1fr;
+		}
+
 		.user-row {
 			grid-template-columns: 1fr;
 		}
