@@ -6,7 +6,7 @@
 			<a href="/login">Log in with email code</a>
 			<a class="secondary" href="/login?mode=signup">Create an account</a>
 		</div>
-		<p class="hint">After login, you will be redirected to your board at /u/your-handle.</p>
+		<p class="hint">After login, you will be redirected to the users directory at /users.</p>
 	</section>
 </main>
 

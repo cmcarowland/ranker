@@ -202,9 +202,7 @@
 		<p>Last saved: {new Date(data.updatedAt).toLocaleString()}</p>
 	</div>
 	<div class="context-actions">
-		{#if data.viewer && !data.canEdit}
-			<a href={`/u/${data.viewer.handle}`}>Go to your rankings</a>
-		{/if}
+		<a href="/users">Back to users</a>
 		{#if !data.viewer}
 			<a href="/login">Log in to edit your rankings</a>
 		{:else}

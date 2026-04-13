@@ -123,7 +123,7 @@
 				throw new Error(payload.error ?? 'Verification failed.');
 			}
 
-			window.location.href = `/u/${payload.user.handle}`;
+			window.location.href = '/users';
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Verification failed.';
 		} finally {
