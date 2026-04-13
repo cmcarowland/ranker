@@ -56,26 +56,6 @@ export function isValidDisplayName(displayName: string): boolean {
 	);
 }
 
-export function deriveHandleFromDisplayName(displayName: string): string {
-	return slugify(normalizeDisplayName(displayName));
-}
-
-export function buildUniqueHandleFromDisplayName(displayName: string, existingUsers: User[]): string {
-	const base = deriveHandleFromDisplayName(displayName);
-	const existing = new Set(existingUsers.map((user) => user.handle));
-
-	if (!existing.has(base)) {
-		return base;
-	}
-
-	let counter = 2;
-	while (existing.has(`${base}-${counter}`)) {
-		counter += 1;
-	}
-
-	return `${base}-${counter}`;
-}
-
 export function createUser(email: string, displayName: string, existingUsers: User[]): User {
 	const now = new Date().toISOString();
 	const normalizedEmail = normalizeEmail(email);

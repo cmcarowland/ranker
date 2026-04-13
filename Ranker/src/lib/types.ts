@@ -33,9 +33,10 @@ export interface Coaster {
 	name: string;
 	type: CoasterType;
 	homeParkId: GUID;
-	ridden: boolean;
-	parkRank: number | null;
-	globalRank: number | null;
+	primaryColor: string;
+	ridden?: boolean;
+	parkRank?: number | null;
+	globalRank?: number | null;
 	notes?: string;
 }
 
