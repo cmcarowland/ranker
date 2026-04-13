@@ -65,7 +65,8 @@
 
 <div
     role="listitem"
-    class="card {showRanks ? 'ranked' : ''} {isDragging ? 'dragging' : ''} {canEdit ? '' : 'readonly'}"
+    class="card {isDragging ? 'dragging' : ''} {canEdit ? '' : 'readonly'}"
+    style={`--coaster-border-color: ${coaster.primaryColor ?? '#7da0e8'}`}
     draggable={canEdit ? 'true' : 'false'}
     on:dragstart={handleDragStart}
     on:dragend={handleDragEnd}
@@ -75,8 +76,12 @@
     <div class="meta">{coaster.type} • {parkName}</div>
     {#if showRanks}
         <div class="ranks">
-            <span>Overall #{coaster.globalRank}</span>
-            <span>Park #{coaster.parkRank}</span>
+            {#if fromColumn === 'unridden'}
+                <span>Wishlist #{coaster.globalRank}</span>
+            {:else}
+                <span>Overall #{coaster.globalRank}</span>
+                <span>Park #{coaster.parkRank}</span>
+            {/if}
         </div>
     {/if}
 </div>
@@ -85,7 +90,7 @@
     .card {
         background: #343943;
         border: 1px solid #505a6b;
-        border-left: 4px solid #7da0e8;
+        border-left: 4px solid var(--coaster-border-color, #7da0e8);
         border-radius: 10px;
         padding: 0.7rem;
         cursor: grab;
@@ -94,10 +99,6 @@
 
     .card.readonly {
         cursor: default;
-    }
-
-    .card.ranked {
-        border-left-color: #45b487;
     }
 
     .card.dragging {

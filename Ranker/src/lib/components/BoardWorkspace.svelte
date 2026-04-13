@@ -17,8 +17,9 @@
 
 	let draggedCoasterId: GUID | null = null;
 	let draggedFromColumn: ColumnId | null = null;
-	let hoveredRiddenCoasterId: GUID | null = null;
-	let hoveredRiddenPosition: 'before' | 'after' = 'before';
+	let hoveredCoasterId: GUID | null = null;
+	let hoveredPosition: 'before' | 'after' = 'before';
+	let hoveredColumn: ColumnId | null = null;
 
 	$: if (initialBoard !== lastInitialBoard) {
 		lastInitialBoard = initialBoard;
@@ -48,8 +49,9 @@
 	function resetDragState(): void {
 		draggedCoasterId = null;
 		draggedFromColumn = null;
-		hoveredRiddenCoasterId = null;
-		hoveredRiddenPosition = 'before';
+		hoveredCoasterId = null;
+		hoveredPosition = 'before';
+		hoveredColumn = null;
 	}
 
 	$: {
@@ -57,27 +59,32 @@
 			resetDragState();
 		} else if (
 			draggedCoasterId &&
-			draggedFromColumn === 'ridden' &&
-			hoveredRiddenCoasterId &&
-			hoveredRiddenCoasterId !== draggedCoasterId
+			draggedFromColumn &&
+			hoveredColumn === draggedFromColumn &&
+			hoveredCoasterId &&
+			hoveredCoasterId !== draggedCoasterId
 		) {
-			const currentIndex = board.columns.ridden.indexOf(draggedCoasterId);
-			const hoveredIndex = board.columns.ridden.indexOf(hoveredRiddenCoasterId);
+			const sourceColumn = draggedFromColumn;
+			const currentIndex = board.columns[sourceColumn].indexOf(draggedCoasterId);
+			const hoveredIndex = board.columns[sourceColumn].indexOf(hoveredCoasterId);
 
 			if (currentIndex >= 0 && hoveredIndex >= 0 && currentIndex !== hoveredIndex) {
-				const nextRidden = [...board.columns.ridden];
-				nextRidden.splice(currentIndex, 1);
-				const nextHoveredIndex = nextRidden.indexOf(hoveredRiddenCoasterId);
+				const nextColumnItems = [...board.columns[sourceColumn]];
+				nextColumnItems.splice(currentIndex, 1);
+				const nextHoveredIndex = nextColumnItems.indexOf(hoveredCoasterId);
 
 				if (nextHoveredIndex >= 0) {
-					const insertIndex = hoveredRiddenPosition === 'after' ? nextHoveredIndex + 1 : nextHoveredIndex;
-					if (nextRidden[insertIndex] !== draggedCoasterId && nextRidden[insertIndex - 1] !== draggedCoasterId) {
-						nextRidden.splice(insertIndex, 0, draggedCoasterId);
+					const insertIndex = hoveredPosition === 'after' ? nextHoveredIndex + 1 : nextHoveredIndex;
+					if (
+						nextColumnItems[insertIndex] !== draggedCoasterId &&
+						nextColumnItems[insertIndex - 1] !== draggedCoasterId
+					) {
+						nextColumnItems.splice(insertIndex, 0, draggedCoasterId);
 						board = {
 							...board,
 							columns: {
 								...board.columns,
-								ridden: nextRidden
+								[sourceColumn]: nextColumnItems
 							}
 						};
 
@@ -89,14 +96,15 @@
 	}
 
 	function recalculateRanks(): void {
-		for (const coasterId of board.columns.unridden) {
+		for (let index = 0; index < board.columns.unridden.length; index += 1) {
+			const coasterId = board.columns.unridden[index];
 			const coaster = getCoasterById(coasterId);
 			if (!coaster) {
 				continue;
 			}
 
 			coaster.ridden = false;
-			coaster.globalRank = null;
+			coaster.globalRank = index + 1;
 			coaster.parkRank = null;
 		}
 
@@ -132,13 +140,7 @@
 			return;
 		}
 
-		if (toColumn === 'ridden' && draggedFromColumn === 'ridden') {
-			recalculateRanks();
-			resetDragState();
-			return;
-		}
-
-		if (toColumn === draggedFromColumn && beforeCoasterId === null) {
+		if (toColumn === draggedFromColumn) {
 			recalculateRanks();
 			resetDragState();
 			return;
@@ -181,17 +183,19 @@
 
 		draggedCoasterId = coasterId;
 		draggedFromColumn = fromColumn;
-		hoveredRiddenCoasterId = null;
-		hoveredRiddenPosition = 'before';
+		hoveredCoasterId = null;
+		hoveredPosition = 'before';
+		hoveredColumn = null;
 	}
 
 	function setHoveredCoasterWhileDragging(toColumn: ColumnId, coasterId: GUID, position: 'before' | 'after'): void {
-		if (!canEdit || toColumn !== 'ridden' || draggedFromColumn !== 'ridden') {
+		if (!canEdit || !draggedFromColumn || toColumn !== draggedFromColumn) {
 			return;
 		}
 
-		hoveredRiddenCoasterId = coasterId;
-		hoveredRiddenPosition = position;
+		hoveredCoasterId = coasterId;
+		hoveredPosition = position;
+		hoveredColumn = toColumn;
 	}
 
 	function isBoardData(value: unknown): value is BoardData {
@@ -304,7 +308,7 @@
 	<section class="toolbar">
 		<div class="title-wrap">
 			<h1>{ownerDisplayName}'s Coaster Ranker</h1>
-			<p>Drag cards between unridden and ridden. Reorder ridden cards to set global and per-park rankings.</p>
+			<p>Drag cards between unridden and ridden. Reorder cards in either column to organize and rank coasters.</p>
 			{#if !canEdit}
 				<p class="readonly">Viewing only. Log in as this user to edit rankings.</p>
 			{/if}
@@ -343,42 +347,46 @@
 		{/if}
 	</section>
 
-	<section class="board">
-		<DropZoneColumn
-			title="Unridden"
-			columnId="unridden"
-			coasterIds={visibleUnridden}
-			visibleCount={visibleUnridden.length}
-			totalCount={board.columns.unridden.length}
-			emptyMessage="No coasters match this filter."
-			{draggedCoasterId}
-			showRanks={false}
-			{canEdit}
-			{getCoasterById}
-			{getParkById}
-			onColumnDrop={moveCoaster}
-			onCardDropBefore={moveCoaster}
-			onCardDragHover={setHoveredCoasterWhileDragging}
-			onCardDragStart={startDraggingCoaster}
-			onCardDragEnd={resetDragState} />
+	<section class="board" class:readonly-board={!canEdit}>
+		{#if canEdit}
+			<DropZoneColumn
+				title="Unridden/Wishlist"
+				columnId="unridden"
+				coasterIds={visibleUnridden}
+				visibleCount={visibleUnridden.length}
+				totalCount={board.columns.unridden.length}
+				emptyMessage="No coasters match this filter."
+				{draggedCoasterId}
+				showRanks={true}
+				{canEdit}
+				{getCoasterById}
+				{getParkById}
+				onColumnDrop={moveCoaster}
+				onCardDropBefore={moveCoaster}
+				onCardDragHover={setHoveredCoasterWhileDragging}
+				onCardDragStart={startDraggingCoaster}
+				onCardDragEnd={resetDragState} />
+		{/if}
 
-		<DropZoneColumn
-			title="Ridden"
-			columnId="ridden"
-			coasterIds={visibleRidden}
-			visibleCount={visibleRidden.length}
-			totalCount={board.columns.ridden.length}
-			emptyMessage="Drop coasters here to rank them."
-			{draggedCoasterId}
-			showRanks={true}
-			{canEdit}
-			{getCoasterById}
-			{getParkById}
-			onColumnDrop={moveCoaster}
-			onCardDropBefore={moveCoaster}
-			onCardDragHover={setHoveredCoasterWhileDragging}
-			onCardDragStart={startDraggingCoaster}
-			onCardDragEnd={resetDragState} />
+		<div class:full-span={!canEdit}>
+			<DropZoneColumn
+				title="Ridden"
+				columnId="ridden"
+				coasterIds={visibleRidden}
+				visibleCount={visibleRidden.length}
+				totalCount={board.columns.ridden.length}
+				emptyMessage="Drop coasters here to rank them."
+				{draggedCoasterId}
+				showRanks={true}
+				{canEdit}
+				{getCoasterById}
+				{getParkById}
+				onColumnDrop={moveCoaster}
+				onCardDropBefore={moveCoaster}
+				onCardDragHover={setHoveredCoasterWhileDragging}
+				onCardDragStart={startDraggingCoaster}
+				onCardDragEnd={resetDragState} />
+		</div>
 	</section>
 
 	{#if dev}
@@ -490,6 +498,10 @@
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 1rem;
+	}
+
+	.readonly-board .full-span {
+		grid-column: 1 / -1;
 	}
 
 	.json-panel {
