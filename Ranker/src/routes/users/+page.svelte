@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SessionContextBar from '$lib/components/SessionContextBar.svelte';
 	import type { PublicUserBoardSummary } from '$lib/types';
 
 	export let data: {
@@ -36,6 +37,13 @@
 			.toLowerCase()
 			.includes(normalizedQuery);
 	});
+
+	async function logout(): Promise<void> {
+		await fetch('/auth/logout', {
+			method: 'POST'
+		});
+		window.location.href = '/users';
+	}
 </script>
 
 <main class="directory-page">
@@ -44,14 +52,15 @@
 			<h1>Rider Directory</h1>
 			<p>Browse public rankings and open any rider's board.</p>
 		</div>
-		<div class="header-actions">
-			{#if data.viewer}
-				<a href={`/u/${data.viewer.handle}`}>Go to your board</a>
-			{:else}
-				<a href="/login">Log in</a>
-			{/if}
-		</div>
 	</section>
+
+	<SessionContextBar
+		viewer={data.viewer}
+		showGoToBoard={Boolean(data.viewer)}
+		showLoginAction={!data.viewer}
+		showLogoutAction={Boolean(data.viewer)}
+		onLogout={logout}
+	/>
 
 	<section class="directory-list" aria-label="Users and top coasters">
 		<div class="directory-controls">
@@ -110,7 +119,7 @@
 
 	.directory-header {
 		display: flex;
-		justify-content: space-between;
+		justify-content: flex-start;
 		align-items: center;
 		gap: 1rem;
 		flex-wrap: wrap;

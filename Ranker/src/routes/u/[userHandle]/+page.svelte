@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import BoardWorkspace from '$lib/components/BoardWorkspace.svelte';
+	import SessionContextBar from '$lib/components/SessionContextBar.svelte';
 	import type { BoardData } from '$lib/types';
 
 	export let data: {
@@ -180,36 +181,20 @@
 	</div>
 {/if}
 
-<section class="context-bar">
-	<div class="context-copy">
-		{#if data.viewer}
-			<p>
-				Signed in as <strong>@{data.viewer.handle}</strong> 
-				{#if data.canEdit}
-					<button type="button" class="name-btn" on:click={openProfileModal}>
-						({data.viewer.displayName})
-					</button>
-				{:else}
-					<span>({data.viewer.displayName})</span>
-				{/if}
-			</p>
-		{:else}
-			<p>You are viewing in public mode.</p>
-		{/if}
-		<p>
-			Viewing <strong>{data.owner.displayName}</strong>'s rankings (@{data.owner.handle}).
-		</p>
-		<p>Last saved: {new Date(data.updatedAt).toLocaleString()}</p>
-	</div>
-	<div class="context-actions">
-		<a href="/users">Back to users</a>
-		{#if !data.viewer}
-			<a href="/login">Log in to edit your rankings</a>
-		{:else}
-			<button type="button" on:click={logout}>Log out</button>
-		{/if}
-	</div>
-</section>
+<SessionContextBar
+	viewer={data.viewer}
+	canOpenProfile={data.canEdit}
+	onOpenProfile={openProfileModal}
+	detailLines={[
+		`Viewing ${data.owner.displayName}'s rankings (@${data.owner.handle}).`,
+		`Last saved: ${new Date(data.updatedAt).toLocaleString()}`
+	]}
+	showBackToUsers={true}
+	showLoginAction={!data.viewer}
+	loginLabel="Log in to edit your rankings"
+	showLogoutAction={Boolean(data.viewer)}
+	onLogout={logout}
+/>
 
 {#if saveError}
 	<p class="error">{saveError}</p>
@@ -223,58 +208,11 @@
 />
 
 <style>
-	.context-bar {
-		max-width: 1100px;
-		margin: 1.25rem auto 0;
-		padding: 0 1.5rem;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 0.8rem;
-		flex-wrap: wrap;
-	}
-
-	.context-copy p {
-		margin: 0;
-		color: #d2d8e4;
-	}
-
-	.context-actions {
-		display: flex;
-		gap: 0.7rem;
-		align-items: center;
-	}
-
-	a,
-	button {
-		border: 1px solid #6d7c96;
-		background: #2d3440;
-		color: #f1f4fa;
-		border-radius: 8px;
-		padding: 0.4rem 0.6rem;
-		text-decoration: none;
-		cursor: pointer;
-	}
-
 	.error {
 		max-width: 1100px;
 		margin: 0.6rem auto 0;
 		padding: 0 1.5rem;
 		color: #ff9c93;
-	}
-
-	.name-btn {
-		background: none;
-		border: none;
-		color: inherit;
-		padding: 0;
-		cursor: pointer;
-		text-decoration: underline;
-		font-size: inherit;
-	}
-
-	.name-btn:hover {
-		opacity: 0.8;
 	}
 
 	.modal-overlay {
