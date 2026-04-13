@@ -1,0 +1,44 @@
+:root {
+	--color-body-bg-start: #1d1f23;
+	--color-body-bg-end: #2a2d33;
+	--color-body-text: #e6e8ec;
+
+	--color-surface-panel: rgba(36, 39, 45, 0.92);
+	--color-surface-panel-strong: rgba(36, 39, 45, 0.95);
+	--color-surface-card: #262a31;
+	--color-surface-input: #2a2e35;
+	--color-surface-action: #2d3440;
+	--color-surface-action-hover: #354055;
+	--color-surface-secondary-action: #222831;
+	--color-surface-json: #161a22;
+
+	--color-border-default: #434955;
+	--color-border-card: #414753;
+	--color-border-input: #586171;
+	--color-border-action: #6d7c96;
+	--color-border-dropzone: #6f7f99;
+	--color-border-json: #3b414e;
+	--color-border-modal-separator: #444d5d;
+
+	--color-text-primary: #f1f4fa;
+	--color-text-base: #bcc4d1;
+	--color-text-muted: #c3ccdc;
+	--color-text-label: #d5d9e1;
+	--color-text-input: #f3f5f8;
+	--color-text-file-input: #cdd5e4;
+	--color-text-dropzone: #bfc9da;
+	--color-text-alt: #d2d8e4;
+	--color-text-subtle: #9faac0;
+	--color-text-panel: #d7e0f2;
+	--color-text-modal-heading: #e6e8ec;
+	--color-text-readonly-warning: #ffcc81;
+	--color-text-success: #9cc5a9;
+	--color-text-error: #ff9c93;
+}
+
+body {
+	margin: 0;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background: linear-gradient(135deg, var(--color-body-bg-start) 0%, var(--color-body-bg-end) 100%);
+	color: var(--color-body-text);
+}

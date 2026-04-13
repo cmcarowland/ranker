@@ -242,8 +242,8 @@
 	}
 
 	.panel {
-		background: rgba(36, 39, 45, 0.92);
-		border: 1px solid #434955;
+		background: var(--color-surface-panel);
+		border: 1px solid var(--color-border-default);
 		border-radius: 14px;
 		padding: 1.25rem;
 		display: grid;
@@ -256,7 +256,7 @@
 
 	p {
 		margin: 0;
-		color: #bcc4d1;
+		color: var(--color-text-base);
 	}
 
 	.stack {
@@ -278,22 +278,22 @@
 	input {
 		padding: 0.6rem 0.65rem;
 		border-radius: 8px;
-		border: 1px solid #586171;
-		background: #2a2e35;
-		color: #f3f5f8;
+		border: 1px solid var(--color-border-input);
+		background: var(--color-surface-input);
+		color: var(--color-text-input);
 	}
 
 	button {
-		border: 1px solid #6d7c96;
-		background: #2d3440;
-		color: #f1f4fa;
+		border: 1px solid var(--color-border-action);
+		background: var(--color-surface-action);
+		color: var(--color-text-primary);
 		border-radius: 8px;
 		padding: 0.55rem 0.7rem;
 		cursor: pointer;
 	}
 
 	button.secondary {
-		background: #222831;
+		background: var(--color-surface-secondary-action);
 	}
 
 	button:disabled {
@@ -304,14 +304,14 @@
 	.verify {
 		margin-top: 0.5rem;
 		padding-top: 0.65rem;
-		border-top: 1px solid #444d5d;
+		border-top: 1px solid var(--color-border-modal-separator);
 	}
 
 	.status {
-		color: #9cc5a9;
+		color: var(--color-text-success);
 	}
 
 	.error {
-		color: #ff9c93;
+		color: var(--color-text-error);
 	}
 </style>

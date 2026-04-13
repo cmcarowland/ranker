@@ -124,8 +124,8 @@
 		gap: 1rem;
 		flex-wrap: wrap;
 		padding: 1rem;
-		background: rgba(36, 39, 45, 0.92);
-		border: 1px solid #434955;
+		background: var(--color-surface-panel);
+		border: 1px solid var(--color-border-default);
 		border-radius: 12px;
 	}
 
@@ -136,7 +136,7 @@
 
 	p {
 		margin: 0.35rem 0 0;
-		color: #bcc4d1;
+		color: var(--color-text-base);
 	}
 
 	.directory-list {
@@ -154,23 +154,23 @@
 		display: grid;
 		gap: 0.3rem;
 		font-size: 0.85rem;
-		color: #d5d9e1;
+		color: var(--color-text-label);
 	}
 
 	.directory-controls input,
 	.directory-controls select {
 		padding: 0.5rem 0.65rem;
 		border-radius: 8px;
-		border: 1px solid #586171;
-		background: #2a2e35;
-		color: #f3f5f8;
+		border: 1px solid var(--color-border-input);
+		background: var(--color-surface-input);
+		color: var(--color-text-input);
 	}
 
 	.user-row {
 		padding: 0.85rem 1rem;
-		border: 1px solid #434955;
+		border: 1px solid var(--color-border-default);
 		border-radius: 12px;
-		background: #262a31;
+		background: var(--color-surface-card);
 		display: grid;
 		grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) auto;
 		gap: 0.7rem;
@@ -185,7 +185,7 @@
 	.user-meta p {
 		margin: 0.2rem 0 0;
 		font-size: 0.9rem;
-		color: #9faac0;
+		color: var(--color-text-subtle);
 	}
 
 	.top-coaster .label {
@@ -193,7 +193,7 @@
 		font-size: 0.75rem;
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
-		color: #9ca8bc;
+		color: var(--color-text-subtle);
 	}
 
 	.top-coaster strong {
@@ -205,16 +205,16 @@
 	a {
 		display: inline-block;
 		text-decoration: none;
-		border: 1px solid #6d7c96;
-		background: #2d3440;
-		color: #f1f4fa;
+		border: 1px solid var(--color-border-action);
+		background: var(--color-surface-action);
+		color: var(--color-text-primary);
 		border-radius: 8px;
 		padding: 0.45rem 0.65rem;
 	}
 
 	.empty {
 		padding: 1rem;
-		border: 1px dashed #6d7c96;
+		border: 1px dashed var(--color-border-action);
 		border-radius: 12px;
 		margin: 0;
 	}

@@ -384,26 +384,6 @@
 
 <style>
 	.page {
-		--color-panel-bg: rgba(36, 39, 45, 0.92);
-		--color-panel-border: #434955;
-		--color-text-body: #bcc4d1;
-		--color-text-readonly: #ffcc81;
-		--color-text-label: #d5d9e1;
-		--color-select-border: #586171;
-		--color-select-bg: #2a2e35;
-		--color-select-text: #f3f5f8;
-		--color-action-border: #6d7c96;
-		--color-action-bg: #2d3440;
-		--color-action-bg-hover: #354055;
-		--color-action-text: #f1f4fa;
-		--color-file-input-text: #cdd5e4;
-		--color-dropzone-border: #6f7f99;
-		--color-dropzone-text: #bfc9da;
-		--color-status-success: #9cc5a9;
-		--color-json-bg: #161a22;
-		--color-json-border: #3b414e;
-		--color-json-text: #d7e0f2;
-
 		max-width: 1100px;
 		margin: 0 auto;
 		padding: 1.5rem;
@@ -418,8 +398,8 @@
 		align-items: end;
 		flex-wrap: wrap;
 		padding: 1rem;
-		background: var(--color-panel-bg);
-		border: 1px solid var(--color-panel-border);
+		background: var(--color-surface-panel);
+		border: 1px solid var(--color-border-default);
 		border-radius: 12px;
 	}
 
@@ -430,11 +410,11 @@
 
 	p {
 		margin: 0.35rem 0 0;
-		color: var(--color-text-body);
+		color: var(--color-text-base);
 	}
 
 	.readonly {
-		color: var(--color-text-readonly);
+		color: var(--color-text-readonly-warning);
 	}
 
 	.filter {
@@ -447,9 +427,9 @@
 	select {
 		padding: 0.5rem 0.65rem;
 		border-radius: 8px;
-		border: 1px solid var(--color-select-border);
-		background: var(--color-select-bg);
-		color: var(--color-select-text);
+		border: 1px solid var(--color-border-input);
+		background: var(--color-surface-input);
+		color: var(--color-text-input);
 	}
 
 	.save-tools {
@@ -459,9 +439,9 @@
 	}
 
 	.action {
-		border: 1px solid var(--color-action-border);
-		background: var(--color-action-bg);
-		color: var(--color-action-text);
+		border: 1px solid var(--color-border-action);
+		background: var(--color-surface-action);
+		color: var(--color-text-primary);
 		border-radius: 8px;
 		padding: 0.45rem 0.65rem;
 		cursor: pointer;
@@ -473,7 +453,7 @@
 	}
 
 	.action:hover:enabled {
-		background: var(--color-action-bg-hover);
+		background: var(--color-surface-action-hover);
 	}
 
 	.file-upload {
@@ -484,19 +464,19 @@
 	}
 
 	.file-upload input {
-		color: var(--color-file-input-text);
+		color: var(--color-text-input);
 	}
 
 	.dropzone {
-		border: 1px dashed var(--color-dropzone-border);
+		border: 1px dashed var(--color-border-dropzone);
 		border-radius: 8px;
 		padding: 0.45rem 0.55rem;
 		font-size: 0.84rem;
-		color: var(--color-dropzone-text);
+		color: var(--color-text-dropzone);
 	}
 
 	.status {
-		color: var(--color-status-success);
+		color: var(--color-text-success);
 	}
 
 	.board {
@@ -511,10 +491,10 @@
 
 	.json-panel {
 		padding: 0.85rem;
-		background: var(--color-json-bg);
-		border: 1px solid var(--color-json-border);
+		background: var(--color-surface-json);
+		border: 1px solid var(--color-border-json);
 		border-radius: 12px;
-		color: var(--color-json-text);
+		color: var(--color-text-panel);
 		overflow: auto;
 	}
 
