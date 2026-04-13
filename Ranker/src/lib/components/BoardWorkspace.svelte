@@ -384,6 +384,26 @@
 
 <style>
 	.page {
+		--color-panel-bg: rgba(36, 39, 45, 0.92);
+		--color-panel-border: #434955;
+		--color-text-body: #bcc4d1;
+		--color-text-readonly: #ffcc81;
+		--color-text-label: #d5d9e1;
+		--color-select-border: #586171;
+		--color-select-bg: #2a2e35;
+		--color-select-text: #f3f5f8;
+		--color-action-border: #6d7c96;
+		--color-action-bg: #2d3440;
+		--color-action-bg-hover: #354055;
+		--color-action-text: #f1f4fa;
+		--color-file-input-text: #cdd5e4;
+		--color-dropzone-border: #6f7f99;
+		--color-dropzone-text: #bfc9da;
+		--color-status-success: #9cc5a9;
+		--color-json-bg: #161a22;
+		--color-json-border: #3b414e;
+		--color-json-text: #d7e0f2;
+
 		max-width: 1100px;
 		margin: 0 auto;
 		padding: 1.5rem;
@@ -398,8 +418,8 @@
 		align-items: end;
 		flex-wrap: wrap;
 		padding: 1rem;
-		background: rgba(36, 39, 45, 0.92);
-		border: 1px solid #434955;
+		background: var(--color-panel-bg);
+		border: 1px solid var(--color-panel-border);
 		border-radius: 12px;
 	}
 
@@ -410,26 +430,26 @@
 
 	p {
 		margin: 0.35rem 0 0;
-		color: #bcc4d1;
+		color: var(--color-text-body);
 	}
 
 	.readonly {
-		color: #ffcc81;
+		color: var(--color-text-readonly);
 	}
 
 	.filter {
 		display: grid;
 		gap: 0.35rem;
 		font-size: 0.9rem;
-		color: #d5d9e1;
+		color: var(--color-text-label);
 	}
 
 	select {
 		padding: 0.5rem 0.65rem;
 		border-radius: 8px;
-		border: 1px solid #586171;
-		background: #2a2e35;
-		color: #f3f5f8;
+		border: 1px solid var(--color-select-border);
+		background: var(--color-select-bg);
+		color: var(--color-select-text);
 	}
 
 	.save-tools {
@@ -439,9 +459,9 @@
 	}
 
 	.action {
-		border: 1px solid #6d7c96;
-		background: #2d3440;
-		color: #f1f4fa;
+		border: 1px solid var(--color-action-border);
+		background: var(--color-action-bg);
+		color: var(--color-action-text);
 		border-radius: 8px;
 		padding: 0.45rem 0.65rem;
 		cursor: pointer;
@@ -453,30 +473,30 @@
 	}
 
 	.action:hover:enabled {
-		background: #354055;
+		background: var(--color-action-bg-hover);
 	}
 
 	.file-upload {
 		display: grid;
 		gap: 0.2rem;
 		font-size: 0.85rem;
-		color: #d5d9e1;
+		color: var(--color-text-label);
 	}
 
 	.file-upload input {
-		color: #cdd5e4;
+		color: var(--color-file-input-text);
 	}
 
 	.dropzone {
-		border: 1px dashed #6f7f99;
+		border: 1px dashed var(--color-dropzone-border);
 		border-radius: 8px;
 		padding: 0.45rem 0.55rem;
 		font-size: 0.84rem;
-		color: #bfc9da;
+		color: var(--color-dropzone-text);
 	}
 
 	.status {
-		color: #9cc5a9;
+		color: var(--color-status-success);
 	}
 
 	.board {
@@ -491,10 +511,10 @@
 
 	.json-panel {
 		padding: 0.85rem;
-		background: #161a22;
-		border: 1px solid #3b414e;
+		background: var(--color-json-bg);
+		border: 1px solid var(--color-json-border);
 		border-radius: 12px;
-		color: #d7e0f2;
+		color: var(--color-json-text);
 		overflow: auto;
 	}
 
