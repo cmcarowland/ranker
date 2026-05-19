@@ -398,8 +398,8 @@
 		align-items: end;
 		flex-wrap: wrap;
 		padding: 1rem;
-		background: rgba(36, 39, 45, 0.92);
-		border: 1px solid #434955;
+		background: var(--color-surface-panel);
+		border: 1px solid var(--color-border-default);
 		border-radius: 12px;
 	}
 
@@ -410,26 +410,26 @@
 
 	p {
 		margin: 0.35rem 0 0;
-		color: #bcc4d1;
+		color: var(--color-text-base);
 	}
 
 	.readonly {
-		color: #ffcc81;
+		color: var(--color-text-readonly-warning);
 	}
 
 	.filter {
 		display: grid;
 		gap: 0.35rem;
 		font-size: 0.9rem;
-		color: #d5d9e1;
+		color: var(--color-text-label);
 	}
 
 	select {
 		padding: 0.5rem 0.65rem;
 		border-radius: 8px;
-		border: 1px solid #586171;
-		background: #2a2e35;
-		color: #f3f5f8;
+		border: 1px solid var(--color-border-input);
+		background: var(--color-surface-input);
+		color: var(--color-text-input);
 	}
 
 	.save-tools {
@@ -439,9 +439,9 @@
 	}
 
 	.action {
-		border: 1px solid #6d7c96;
-		background: #2d3440;
-		color: #f1f4fa;
+		border: 1px solid var(--color-border-action);
+		background: var(--color-surface-action);
+		color: var(--color-text-primary);
 		border-radius: 8px;
 		padding: 0.45rem 0.65rem;
 		cursor: pointer;
@@ -453,30 +453,30 @@
 	}
 
 	.action:hover:enabled {
-		background: #354055;
+		background: var(--color-surface-action-hover);
 	}
 
 	.file-upload {
 		display: grid;
 		gap: 0.2rem;
 		font-size: 0.85rem;
-		color: #d5d9e1;
+		color: var(--color-text-label);
 	}
 
 	.file-upload input {
-		color: #cdd5e4;
+		color: var(--color-text-input);
 	}
 
 	.dropzone {
-		border: 1px dashed #6f7f99;
+		border: 1px dashed var(--color-border-action);
 		border-radius: 8px;
 		padding: 0.45rem 0.55rem;
 		font-size: 0.84rem;
-		color: #bfc9da;
+		color: var(--color-text-base);
 	}
 
 	.status {
-		color: #9cc5a9;
+		color: var(--color-text-success);
 	}
 
 	.board {
@@ -491,10 +491,10 @@
 
 	.json-panel {
 		padding: 0.85rem;
-		background: #161a22;
-		border: 1px solid #3b414e;
+		background: var(--color-surface-card);
+		border: 1px solid var(--color-border-default);
 		border-radius: 12px;
-		color: #d7e0f2;
+		color: var(--color-text-primary);
 		overflow: auto;
 	}
 

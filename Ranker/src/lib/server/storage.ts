@@ -5,7 +5,7 @@ import path from 'node:path';
 // @ts-ignore - Node builtin module types are not available in this environment.
 import { randomUUID } from 'node:crypto';
 import { initialBoardData } from '$lib/data';
-import type { BoardData, OtpChallenge, Session, User, UserBoard } from '$lib/types';
+import type { BoardData, OtpChallenge, PublicUserBoardSummary, Session, User, UserBoard } from '$lib/types';
 import {
 	expiresInFromNow,
 	generateSessionToken,
@@ -180,6 +180,46 @@ export async function findUserById(userId: string): Promise<User | null> {
 	cleanupExpiredRecords(db);
 	const user = db.users.find((entry) => entry.id === userId);
 	return user ?? null;
+}
+
+export async function getPublicUserBoardSummaries(): Promise<PublicUserBoardSummary[]> {
+	const db = await readDb();
+	cleanupExpiredRecords(db);
+
+	const coasters = (await loadCoasters()) as Array<{ id?: string; name?: string }>;
+	const coasterNamesById = new Map<string, string>();
+
+	for (const coaster of coasters) {
+		if (typeof coaster.id === 'string' && typeof coaster.name === 'string') {
+			coasterNamesById.set(coaster.id, coaster.name);
+		}
+	}
+
+	const summaries = await Promise.all(
+		db.users.map(async (user) => {
+			let topCoasterName: string | null = null;
+			const boardFilePath = path.join(DATA_DIR, `${user.id}.json`);
+
+			try {
+				const raw = await readFile(boardFilePath, 'utf8');
+				const boardData = JSON.parse(raw) as { columns?: { ridden?: unknown[] } };
+				const topRidden = boardData.columns?.ridden?.[0];
+				if (typeof topRidden === 'string') {
+					topCoasterName = coasterNamesById.get(topRidden) ?? null;
+				}
+			} catch {
+				topCoasterName = null;
+			}
+
+			return {
+				handle: user.handle,
+				displayName: user.displayName,
+				topCoasterName
+			};
+		})
+	);
+
+	return summaries.sort((a, b) => a.displayName.localeCompare(b.displayName) || a.handle.localeCompare(b.handle));
 }
 
 export async function createUserAccount(email: string, displayName: string): Promise<User | null> {

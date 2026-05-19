@@ -82,8 +82,8 @@
 
 <style>
     .column {
-        background: #262a31;
-        border: 1px solid #414753;
+        background: var(--color-surface-card);
+        border: 1px solid var(--color-border-default);
         border-radius: 12px;
         padding: 0.85rem;
         display: grid;
@@ -109,7 +109,7 @@
     }
 
     .empty {
-        color: #9ca8bc;
+        color: var(--color-text-subtle);
         font-size: 0.9rem;
         margin: 0.3rem 0;
     }

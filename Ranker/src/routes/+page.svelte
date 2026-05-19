@@ -6,7 +6,7 @@
 			<a href="/login">Log in with email code</a>
 			<a class="secondary" href="/login?mode=signup">Create an account</a>
 		</div>
-		<p class="hint">After login, you will be redirected to your board at /u/your-handle.</p>
+		<p class="hint">After login, you will be redirected to the users directory at /users.</p>
 	</section>
 </main>
 
@@ -18,8 +18,8 @@
 	}
 
 	.card {
-		background: rgba(36, 39, 45, 0.92);
-		border: 1px solid #434955;
+		background: var(--color-surface-panel);
+		border: 1px solid var(--color-border-default);
 		border-radius: 14px;
 		padding: 1.25rem;
 		display: grid;
@@ -32,7 +32,7 @@
 
 	p {
 		margin: 0;
-		color: #c3ccdc;
+		color: var(--color-text-base);
 	}
 
 	.actions {
@@ -42,16 +42,16 @@
 	a {
 		display: inline-block;
 		text-decoration: none;
-		border: 1px solid #6d7c96;
-		background: #2d3440;
-		color: #f1f4fa;
+		border: 1px solid var(--color-border-action);
+		background: var(--color-surface-action);
+		color: var(--color-text-primary);
 		border-radius: 8px;
 		padding: 0.55rem 0.7rem;
 		margin-right: 0.45rem;
 	}
 
 	a.secondary {
-		background: #222831;
+		background: var(--color-surface-action);
 	}
 
 	.hint {

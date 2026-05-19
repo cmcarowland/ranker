@@ -90,3 +90,9 @@ export interface AuthUser {
 	displayName: string;
 	handle: string;
 }
+
+export interface PublicUserBoardSummary {
+	handle: string;
+	displayName: string;
+	topCoasterName: string | null;
+}

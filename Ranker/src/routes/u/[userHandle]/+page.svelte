@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import BoardWorkspace from '$lib/components/BoardWorkspace.svelte';
+	import SessionContextBar from '$lib/components/SessionContextBar.svelte';
 	import type { BoardData } from '$lib/types';
 
 	export let data: {
@@ -180,38 +181,20 @@
 	</div>
 {/if}
 
-<section class="context-bar">
-	<div class="context-copy">
-		{#if data.viewer}
-			<p>
-				Signed in as <strong>@{data.viewer.handle}</strong> 
-				{#if data.canEdit}
-					<button type="button" class="name-btn" on:click={openProfileModal}>
-						({data.viewer.displayName})
-					</button>
-				{:else}
-					<span>({data.viewer.displayName})</span>
-				{/if}
-			</p>
-		{:else}
-			<p>You are viewing in public mode.</p>
-		{/if}
-		<p>
-			Viewing <strong>{data.owner.displayName}</strong>'s rankings (@{data.owner.handle}).
-		</p>
-		<p>Last saved: {new Date(data.updatedAt).toLocaleString()}</p>
-	</div>
-	<div class="context-actions">
-		{#if data.viewer && !data.canEdit}
-			<a href={`/u/${data.viewer.handle}`}>Go to your rankings</a>
-		{/if}
-		{#if !data.viewer}
-			<a href="/login">Log in to edit your rankings</a>
-		{:else}
-			<button type="button" on:click={logout}>Log out</button>
-		{/if}
-	</div>
-</section>
+<SessionContextBar
+	viewer={data.viewer}
+	canOpenProfile={data.canEdit}
+	onOpenProfile={openProfileModal}
+	detailLines={[
+		`Viewing ${data.owner.displayName}'s rankings (@${data.owner.handle}).`,
+		`Last saved: ${new Date(data.updatedAt).toLocaleString()}`
+	]}
+	showBackToUsers={true}
+	showLoginAction={!data.viewer}
+	loginLabel="Log in to edit your rankings"
+	showLogoutAction={Boolean(data.viewer)}
+	onLogout={logout}
+/>
 
 {#if saveError}
 	<p class="error">{saveError}</p>
@@ -225,58 +208,11 @@
 />
 
 <style>
-	.context-bar {
-		max-width: 1100px;
-		margin: 1.25rem auto 0;
-		padding: 0 1.5rem;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 0.8rem;
-		flex-wrap: wrap;
-	}
-
-	.context-copy p {
-		margin: 0;
-		color: #d2d8e4;
-	}
-
-	.context-actions {
-		display: flex;
-		gap: 0.7rem;
-		align-items: center;
-	}
-
-	a,
-	button {
-		border: 1px solid #6d7c96;
-		background: #2d3440;
-		color: #f1f4fa;
-		border-radius: 8px;
-		padding: 0.4rem 0.6rem;
-		text-decoration: none;
-		cursor: pointer;
-	}
-
 	.error {
 		max-width: 1100px;
 		margin: 0.6rem auto 0;
 		padding: 0 1.5rem;
 		color: #ff9c93;
-	}
-
-	.name-btn {
-		background: none;
-		border: none;
-		color: inherit;
-		padding: 0;
-		cursor: pointer;
-		text-decoration: underline;
-		font-size: inherit;
-	}
-
-	.name-btn:hover {
-		opacity: 0.8;
 	}
 
 	.modal-overlay {
@@ -293,8 +229,8 @@
 	}
 
 	.modal-content {
-		background: rgba(36, 39, 45, 0.95);
-		border: 1px solid #434955;
+		background: var(--color-surface-panel);
+		border: 1px solid var(--color-border-default);
 		border-radius: 12px;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 		max-width: 400px;
@@ -308,19 +244,19 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 1.25rem;
-		border-bottom: 1px solid #434955;
+		border-bottom: 1px solid var(--color-border-default);
 	}
 
 	.modal-header h2 {
 		margin: 0;
 		font-size: 1.25rem;
-		color: #e6e8ec;
+		color: var(--color-text-primary);
 	}
 
 	.close-btn {
 		background: none;
 		border: none;
-		color: #d2d8e4;
+		color: var(--color-text-label);
 		font-size: 1.5rem;
 		cursor: pointer;
 		padding: 0;
@@ -332,7 +268,7 @@
 	}
 
 	.close-btn:hover {
-		color: #f1f4fa;
+		color: var(--color-text-primary);
 	}
 
 	.modal-body {
@@ -353,13 +289,13 @@
 
 	.field-label {
 		font-size: 0.85rem;
-		color: #9ca3af;
+		color: var(--color-text-subtle);
 		font-weight: 500;
 	}
 
 	.profile-field p {
 		margin: 0;
-		color: #e6e8ec;
+		color: var(--color-text-primary);
 	}
 
 	.display-name-row {
@@ -378,9 +314,9 @@
 	.edit-form input {
 		padding: 0.5rem;
 		border-radius: 4px;
-		border: 1px solid #586171;
-		background: #2a2e35;
-		color: #f3f5f8;
+		border: 1px solid var(--color-border-input);
+		background: var(--color-surface-input);
+		color: var(--color-text-input);
 	}
 
 	.edit-actions {
@@ -392,9 +328,9 @@
 		flex: 1;
 		padding: 0.4rem 0.6rem;
 		border-radius: 4px;
-		border: 1px solid #6d7c96;
-		background: #2d3440;
-		color: #f1f4fa;
+		border: 1px solid var(--color-border-action);
+		background: var(--color-surface-action);
+		color: var(--color-text-primary);
 		cursor: pointer;
 		font-size: 0.9rem;
 	}
@@ -405,7 +341,7 @@
 	}
 
 	.profile-error {
-		color: #ff9c93;
+		color: var(--color-text-error);
 		font-size: 0.9rem;
 		margin-top: 0.5rem;
 	}
