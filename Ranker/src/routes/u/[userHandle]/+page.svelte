@@ -229,7 +229,7 @@
 	}
 
 	.modal-content {
-		background: var(--color-surface-panel-strong);
+		background: var(--color-surface-panel);
 		border: 1px solid var(--color-border-default);
 		border-radius: 12px;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
@@ -250,13 +250,13 @@
 	.modal-header h2 {
 		margin: 0;
 		font-size: 1.25rem;
-		color: var(--color-text-modal-heading);
+		color: var(--color-text-primary);
 	}
 
 	.close-btn {
 		background: none;
 		border: none;
-		color: var(--color-text-alt);
+		color: var(--color-text-label);
 		font-size: 1.5rem;
 		cursor: pointer;
 		padding: 0;
@@ -295,7 +295,7 @@
 
 	.profile-field p {
 		margin: 0;
-		color: var(--color-text-modal-heading);
+		color: var(--color-text-primary);
 	}
 
 	.display-name-row {

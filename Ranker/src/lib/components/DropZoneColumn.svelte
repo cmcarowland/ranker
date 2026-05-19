@@ -83,7 +83,7 @@
 <style>
     .column {
         background: var(--color-surface-card);
-        border: 1px solid var(--color-border-card);
+        border: 1px solid var(--color-border-default);
         border-radius: 12px;
         padding: 0.85rem;
         display: grid;

@@ -71,7 +71,7 @@
 
 	.context-copy p {
 		margin: 0;
-		color: var(--color-text-alt);
+		color: var(--color-text-label);
 	}
 
 	.context-actions {

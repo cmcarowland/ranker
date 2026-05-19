@@ -293,7 +293,7 @@
 	}
 
 	button.secondary {
-		background: var(--color-surface-secondary-action);
+		background: var(--color-surface-action);
 	}
 
 	button:disabled {
@@ -304,7 +304,7 @@
 	.verify {
 		margin-top: 0.5rem;
 		padding-top: 0.65rem;
-		border-top: 1px solid var(--color-border-modal-separator);
+		border-top: 1px solid var(--color-border-default);
 	}
 
 	.status {

@@ -32,7 +32,7 @@
 
 	p {
 		margin: 0;
-		color: var(--color-text-muted);
+		color: var(--color-text-base);
 	}
 
 	.actions {
@@ -51,7 +51,7 @@
 	}
 
 	a.secondary {
-		background: var(--color-surface-secondary-action);
+		background: var(--color-surface-action);
 	}
 
 	.hint {

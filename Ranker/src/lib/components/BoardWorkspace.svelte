@@ -468,11 +468,11 @@
 	}
 
 	.dropzone {
-		border: 1px dashed var(--color-border-dropzone);
+		border: 1px dashed var(--color-border-action);
 		border-radius: 8px;
 		padding: 0.45rem 0.55rem;
 		font-size: 0.84rem;
-		color: var(--color-text-dropzone);
+		color: var(--color-text-base);
 	}
 
 	.status {
@@ -491,10 +491,10 @@
 
 	.json-panel {
 		padding: 0.85rem;
-		background: var(--color-surface-json);
-		border: 1px solid var(--color-border-json);
+		background: var(--color-surface-card);
+		border: 1px solid var(--color-border-default);
 		border-radius: 12px;
-		color: var(--color-text-panel);
+		color: var(--color-text-primary);
 		overflow: auto;
 	}
 
