@@ -71,7 +71,7 @@
 
 	.context-copy p {
 		margin: 0;
-		color: #d2d8e4;
+		color: var(--color-text-label);
 	}
 
 	.context-actions {
@@ -87,9 +87,9 @@
 		justify-content: center;
 		box-sizing: border-box;
 		min-height: 2.1rem;
-		border: 1px solid #6d7c96;
-		background: #2d3440;
-		color: #f1f4fa;
+		border: 1px solid var(--color-border-action);
+		background: var(--color-surface-action);
+		color: var(--color-text-primary);
 		border-radius: 8px;
 		padding: 0.4rem 0.6rem;
 		text-decoration: none;
